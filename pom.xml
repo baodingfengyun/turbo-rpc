@@ -26,21 +26,21 @@
 	<properties>
 		<version.turbo>0.0.9</version.turbo>
 
-		<maven.compiler.source>1.9</maven.compiler.source>
-		<maven.compiler.target>1.9</maven.compiler.target>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<version.log4j>2.11.0</version.log4j>
-		<version.slf4j>1.7.25</version.slf4j>
-		<version.netty>4.1.27.Final</version.netty>
-		<version.jackson>2.9.6</version.jackson>
-		<version.javassist>3.23.1-GA</version.javassist>
-		<version.guava>25.1-jre</version.guava>
-		<version.typesafe-config>1.3.3</version.typesafe-config>
-		<version.protostuff>1.6.0</version.protostuff>
-		<version.kryo>4.0.2</version.kryo>
-		<version.curator>2.12.0</version.curator>
-		<version.spring-boot>2.0.3.RELEASE</version.spring-boot>
+		<version.log4j>2.17.1</version.log4j>
+		<version.slf4j>1.7.33</version.slf4j>
+		<version.netty>4.1.72.Final</version.netty>
+		<version.jackson>2.13.1</version.jackson>
+		<version.javassist>3.28.0-GA</version.javassist>
+		<version.guava>30.1.1-jre</version.guava>
+		<version.typesafe-config>1.4.1</version.typesafe-config>
+		<version.protostuff>1.7.4</version.protostuff>
+		<version.kryo>5.1.1</version.kryo>
+		<version.curator>5.2.0</version.curator>
+		<version.spring-boot>2.6.2</version.spring-boot>
 		<version.jsr250>1.0</version.jsr250>
 	</properties>
 
@@ -191,8 +191,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.7.0</version>
 				<configuration>
-					<source>9</source>
-					<target>9</target>
+					<source>11</source>
+					<target>11</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
