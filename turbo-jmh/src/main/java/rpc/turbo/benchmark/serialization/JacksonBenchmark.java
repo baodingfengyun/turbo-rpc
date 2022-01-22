@@ -35,124 +35,124 @@ import rpc.turbo.serialization.jackson.JacksonMapper;
 
 @State(Scope.Thread)
 public class JacksonBenchmark {
-	public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
+    public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
 
-	private static final ObjectMapper mapper;
+    private static final ObjectMapper mapper;
 
-	static {
-		mapper = new ObjectMapper();
+    static {
+        mapper = new ObjectMapper();
 
-		mapper.registerModule(new Jdk8Module());
+        mapper.registerModule(new Jdk8Module());
 
-		JavaTimeModule javaTimeModule = new JavaTimeModule();
-		// Hack time module to allow 'Z' at the end of string (i.e. javascript json's)
-		javaTimeModule.addDeserializer(LocalDateTime.class,
-				new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME));
-		mapper.registerModule(javaTimeModule);
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        // Hack time module to allow 'Z' at the end of string (i.e. javascript json's)
+        javaTimeModule.addDeserializer(LocalDateTime.class,
+                new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME));
+        mapper.registerModule(javaTimeModule);
 
-		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
-		mapper.registerModule(new AfterburnerModule());
-	}
+        mapper.registerModule(new AfterburnerModule());
+    }
 
-	ByteBufAllocator allocator = new UnpooledByteBufAllocator(true);
-	ByteBuf userBuffer = allocator.directBuffer(1024 * 1024 * 8, 1024 * 1024 * 8);
-	ByteBuf listBuffer = allocator.directBuffer(1024 * 1024 * 8, 1024 * 1024 * 8);
+    ByteBufAllocator allocator = new UnpooledByteBufAllocator(true);
+    ByteBuf userBuffer = allocator.directBuffer(1024 * 1024 * 8, 1024 * 1024 * 8);
+    ByteBuf listBuffer = allocator.directBuffer(1024 * 1024 * 8, 1024 * 1024 * 8);
 
-	ByteBuffer nioBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 8);
-	ByteBufferOutputStream nioOutputStream = new ByteBufferOutputStream(nioBuffer);
-	ByteBufferInputStream nioInputStream = new ByteBufferInputStream(nioBuffer);
+    ByteBuffer nioBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 8);
+    ByteBufferOutputStream nioOutputStream = new ByteBufferOutputStream(nioBuffer);
+    ByteBufferInputStream nioInputStream = new ByteBufferInputStream(nioBuffer);
 
-	private final JacksonMapper jacksonMapper = new JacksonMapper();
+    private final JacksonMapper jacksonMapper = new JacksonMapper();
 
-	private final UserService userService = new UserServiceServerImpl();
+    private final UserService userService = new UserServiceServerImpl();
 
-	private final User user = userService.getUser(123456789L).join();
-	private final Page<User> userPage = userService.listUser(0).join();
+    private final User user = userService.getUser(123456789L).join();
+    private final Page<User> userPage = userService.listUser(0).join();
 
-	public JacksonBenchmark() {
+    public JacksonBenchmark() {
 
-		try {
-			serializeUser();
+        try {
+            serializeUser();
 
-			System.out.println("userBytes.length：" + userBuffer.writerIndex());
+            System.out.println("userBytes.length：" + userBuffer.writerIndex());
 
-			System.out.println(deserializeUser());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            System.out.println(deserializeUser());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		try {
-			serializeUserList();
+        try {
+            serializeUserList();
 
-			System.out.println("userPageBytes.length：" + listBuffer.writerIndex());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            System.out.println("userPageBytes.length：" + listBuffer.writerIndex());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	public void serializeUser() throws Exception {
-		userBuffer.clear();
-		jacksonMapper.write(userBuffer, user);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public void serializeUser() throws Exception {
+        userBuffer.clear();
+        jacksonMapper.write(userBuffer, user);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	public User deserializeUser() throws Exception {
-		userBuffer.readerIndex(0);
-		return jacksonMapper.read(userBuffer, User.class);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public User deserializeUser() throws Exception {
+        userBuffer.readerIndex(0);
+        return jacksonMapper.read(userBuffer, User.class);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	public void serializeUserList() throws Exception {
-		listBuffer.clear();
-		jacksonMapper.write(listBuffer, userPage);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public void serializeUserList() throws Exception {
+        listBuffer.clear();
+        jacksonMapper.write(listBuffer, userPage);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	public void serializeUser2() throws Exception {
-		nioBuffer.clear();
-		userBuffer.clear();
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public void serializeUser2() throws Exception {
+        nioBuffer.clear();
+        userBuffer.clear();
 
-		mapper.writeValue(nioOutputStream, user);
+        mapper.writeValue(nioOutputStream, user);
 
-		nioBuffer.flip();
-		userBuffer.writeBytes(nioBuffer);
-	}
+        nioBuffer.flip();
+        userBuffer.writeBytes(nioBuffer);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	public void serializeUserList2() throws Exception {
-		nioBuffer.clear();
-		listBuffer.clear();
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public void serializeUserList2() throws Exception {
+        nioBuffer.clear();
+        listBuffer.clear();
 
-		mapper.writeValue(nioOutputStream, userPage);
+        mapper.writeValue(nioOutputStream, userPage);
 
-		nioBuffer.flip();
-		listBuffer.writeBytes(nioBuffer);
-	}
+        nioBuffer.flip();
+        listBuffer.writeBytes(nioBuffer);
+    }
 
-	public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 
-		Options opt = new OptionsBuilder()//
-				.include(JacksonBenchmark.class.getName())//
-				.warmupIterations(10)//
-				.measurementIterations(10)//
-				.threads(CONCURRENCY)//
-				.forks(1)//
-				.build();
+        Options opt = new OptionsBuilder()//
+                .include(JacksonBenchmark.class.getName())//
+                .warmupIterations(10)//
+                .measurementIterations(10)//
+                .threads(CONCURRENCY)//
+                .forks(1)//
+                .build();
 
-		new Runner(opt).run();
+        new Runner(opt).run();
 
-	}
+    }
 
 }

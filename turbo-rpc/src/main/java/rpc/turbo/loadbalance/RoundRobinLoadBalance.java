@@ -1,43 +1,41 @@
 package rpc.turbo.loadbalance;
 
-import java.util.List;
-
 import rpc.turbo.util.concurrent.ConcurrentIntegerSequencer;
+
+import java.util.List;
 
 /**
  * 速度最快 204.642 ± 1.959 ops/us
- * 
- * @author Hank
  *
- * @param <T>
- *            必须为Weightable子类
+ * @param <T> 必须为Weightable子类
+ * @author Hank
  */
 public class RoundRobinLoadBalance<T extends Weightable> implements LoadBalance<T> {
-	private final ConcurrentIntegerSequencer sequencer = new ConcurrentIntegerSequencer(0, true);
+    private final ConcurrentIntegerSequencer sequencer = new ConcurrentIntegerSequencer(0, true);
 
-	protected volatile WeightableGroup<T> weightableGroup = null;
+    protected volatile WeightableGroup<T> weightableGroup = null;
 
-	@Override
-	public void setWeightables(List<T> weightables) {
-		weightableGroup = new WeightableGroup<>(weightables);
-	}
+    @Override
+    public void setWeightables(List<T> weightables) {
+        weightableGroup = new WeightableGroup<>(weightables);
+    }
 
-	@Override
-	public T select() {
-		final WeightableGroup<T> weightableGroup = this.weightableGroup;
+    @Override
+    public T select() {
+        final WeightableGroup<T> weightableGroup = this.weightableGroup;
 
-		if (weightableGroup == null) {
-			return null;
-		}
+        if (weightableGroup == null) {
+            return null;
+        }
 
-		int sum = weightableGroup.sum();
+        int sum = weightableGroup.sum();
 
-		if (sum < 2) {
-			return weightableGroup.get(0);
-		}
+        if (sum < 2) {
+            return weightableGroup.get(0);
+        }
 
-		int seed = sequencer.next();
-		return weightableGroup.get(seed);
-	}
+        int seed = sequencer.next();
+        return weightableGroup.get(seed);
+    }
 
 }

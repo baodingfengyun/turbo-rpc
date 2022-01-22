@@ -6,12 +6,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 
 public class JsonUtils {
-	public static final ObjectMapper objectMapper = new ObjectMapper();
+    public static final ObjectMapper objectMapper = new ObjectMapper();
 
-	static {
-		objectMapper.registerModule(new Jdk8Module());
-		objectMapper.registerModule(new JavaTimeModule());
-		objectMapper.registerModule(new AfterburnerModule());
-	}
+    static {
+        objectMapper.registerModule(new Jdk8Module());
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.registerModule(new AfterburnerModule());
+    }
 
 }

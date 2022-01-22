@@ -17,77 +17,77 @@ import rpc.turbo.remote.RemoteException;
 
 @State(Scope.Benchmark)
 public class ExceptionBenchmark {
-	public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
+    public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
 
-	public Exception exception = new Exception();
-	public RemoteException remoteException = new RemoteException(null, false);
+    public Exception exception = new Exception();
+    public RemoteException remoteException = new RemoteException(null, false);
 
-	public ExceptionBenchmark() {
-	}
+    public ExceptionBenchmark() {
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void _do_nothing() {
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void _do_nothing() {
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void throwNewExceptionAndCatch() {
-		try {
-			throw new Exception();
-		} catch (Exception e) {
-		}
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void throwNewExceptionAndCatch() {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+        }
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void throwNewNoStackTraceAndCatch() {
-		try {
-			throw new RemoteException(null, false);
-		} catch (RemoteException e) {
-		}
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void throwNewNoStackTraceAndCatch() {
+        try {
+            throw new RemoteException(null, false);
+        } catch (RemoteException e) {
+        }
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void throwConstantRemoteExceptionAndCatch() {
-		try {
-			throw remoteException;
-		} catch (RemoteException e) {
-		}
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void throwConstantRemoteExceptionAndCatch() {
+        try {
+            throw remoteException;
+        } catch (RemoteException e) {
+        }
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void throwConstantExceptionAndCatch() {
-		try {
-			throw exception;
-		} catch (Exception e) {
-		}
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void throwConstantExceptionAndCatch() {
+        try {
+            throw exception;
+        } catch (Exception e) {
+        }
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public Object newObject() {
-		return new Object();
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public Object newObject() {
+        return new Object();
+    }
 
-	public static void main(String[] args) throws RunnerException {
-		Options opt = new OptionsBuilder()//
-				.include(ExceptionBenchmark.class.getSimpleName())//
-				.warmupIterations(5)//
-				.measurementIterations(5)//
-				.threads(CONCURRENCY)//
-				.forks(1)//
-				.build();
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()//
+                .include(ExceptionBenchmark.class.getSimpleName())//
+                .warmupIterations(5)//
+                .measurementIterations(5)//
+                .threads(CONCURRENCY)//
+                .forks(1)//
+                .build();
 
-		new Runner(opt).run();
-	}
+        new Runner(opt).run();
+    }
 
 }

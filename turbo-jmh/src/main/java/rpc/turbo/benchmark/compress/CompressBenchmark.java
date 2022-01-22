@@ -32,115 +32,115 @@ import rpc.turbo.benchmark.service.UserServiceServerImpl;
 
 @State(Scope.Thread)
 public class CompressBenchmark {
-	public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
+    public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
 
-	ByteBufAllocator allocator = new UnpooledByteBufAllocator(true);
-	ByteBuf listBuffer = allocator.directBuffer(1024 * 1024 * 8, 1024 * 1024 * 8);
+    ByteBufAllocator allocator = new UnpooledByteBufAllocator(true);
+    ByteBuf listBuffer = allocator.directBuffer(1024 * 1024 * 8, 1024 * 1024 * 8);
 
-	ByteBuffer lz4RawBuffer;
-	ByteBuffer lz4CompressedBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 8);
+    ByteBuffer lz4RawBuffer;
+    ByteBuffer lz4CompressedBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 8);
 
-	ByteBuffer snappyRawBuffer;
-	ByteBuffer snappyCompressedBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 8);
+    ByteBuffer snappyRawBuffer;
+    ByteBuffer snappyCompressedBuffer = ByteBuffer.allocateDirect(1024 * 1024 * 8);
 
-	@SuppressWarnings("rawtypes")
-	private final Schema<Page> userPageSchema = RuntimeSchema.getSchema(Page.class);
-	private final UserService userService = new UserServiceServerImpl();
-	private final Page<User> userPage = userService.listUser(0).join();
+    @SuppressWarnings("rawtypes")
+    private final Schema<Page> userPageSchema = RuntimeSchema.getSchema(Page.class);
+    private final UserService userService = new UserServiceServerImpl();
+    private final Page<User> userPage = userService.listUser(0).join();
 
-	LZ4Compressor lz4Compressor = LZ4Factory.nativeInstance().fastCompressor();
-	LZ4FastDecompressor decompressor = LZ4Factory.nativeInstance().fastDecompressor();
+    LZ4Compressor lz4Compressor = LZ4Factory.nativeInstance().fastCompressor();
+    LZ4FastDecompressor decompressor = LZ4Factory.nativeInstance().fastDecompressor();
 
-	public CompressBenchmark() {
-		try {
-			listBuffer.clear();
-			ByteBufOutput output = new ByteBufOutput(listBuffer);
-			userPageSchema.writeTo(output, userPage);
+    public CompressBenchmark() {
+        try {
+            listBuffer.clear();
+            ByteBufOutput output = new ByteBufOutput(listBuffer);
+            userPageSchema.writeTo(output, userPage);
 
-			lz4RawBuffer = listBuffer.nioBuffer();
-			snappyRawBuffer = listBuffer.nioBuffer();
+            lz4RawBuffer = listBuffer.nioBuffer();
+            snappyRawBuffer = listBuffer.nioBuffer();
 
-			System.out.println("lz4RawBuffer：" + lz4RawBuffer);
-			System.out.println("snappyRawBuffer：" + snappyRawBuffer);
+            System.out.println("lz4RawBuffer：" + lz4RawBuffer);
+            System.out.println("snappyRawBuffer：" + snappyRawBuffer);
 
-			lz4Compress();
-			lz4CompressedBuffer.flip();
+            lz4Compress();
+            lz4CompressedBuffer.flip();
 
-			snappyCompress();
-			// snappyCompressedBuffer.flip();
+            snappyCompress();
+            // snappyCompressedBuffer.flip();
 
-			System.out.println("lz4CompressedBuffer：" + lz4CompressedBuffer);
-			System.out.println("snappyCompressedBuffer：" + snappyCompressedBuffer);
+            System.out.println("lz4CompressedBuffer：" + lz4CompressedBuffer);
+            System.out.println("snappyCompressedBuffer：" + snappyCompressedBuffer);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void _do_nothing() {
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void _do_nothing() {
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void lz4Compress() {
-		lz4RawBuffer.position(0);
-		lz4CompressedBuffer.clear();
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void lz4Compress() {
+        lz4RawBuffer.position(0);
+        lz4CompressedBuffer.clear();
 
-		lz4Compressor.compress(lz4RawBuffer, lz4CompressedBuffer);
-	}
+        lz4Compressor.compress(lz4RawBuffer, lz4CompressedBuffer);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void lz4Decompress() {
-		lz4CompressedBuffer.position(0);
-		lz4RawBuffer.clear();
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void lz4Decompress() {
+        lz4CompressedBuffer.position(0);
+        lz4RawBuffer.clear();
 
-		decompressor.decompress(lz4CompressedBuffer, lz4RawBuffer);
-	}
+        decompressor.decompress(lz4CompressedBuffer, lz4RawBuffer);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void snappyCompress() {
-		snappyRawBuffer.position(0);
-		snappyCompressedBuffer.clear();
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void snappyCompress() {
+        snappyRawBuffer.position(0);
+        snappyCompressedBuffer.clear();
 
-		try {
-			Snappy.compress(snappyRawBuffer, snappyCompressedBuffer);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+        try {
+            Snappy.compress(snappyRawBuffer, snappyCompressedBuffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void snappyDecompress() {
-		snappyCompressedBuffer.position(0);
-		snappyRawBuffer.clear();
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void snappyDecompress() {
+        snappyCompressedBuffer.position(0);
+        snappyRawBuffer.clear();
 
-		try {
-			Snappy.uncompress(snappyCompressedBuffer, snappyRawBuffer);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+        try {
+            Snappy.uncompress(snappyCompressedBuffer, snappyRawBuffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public static void main(String[] args) throws RunnerException {
-		Options opt = new OptionsBuilder()//
-				.include(CompressBenchmark.class.getSimpleName())//
-				.warmupIterations(5)//
-				.measurementIterations(5)//
-				.threads(CONCURRENCY)//
-				.forks(1)//
-				.build();
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()//
+                .include(CompressBenchmark.class.getSimpleName())//
+                .warmupIterations(5)//
+                .measurementIterations(5)//
+                .threads(CONCURRENCY)//
+                .forks(1)//
+                .build();
 
-		new Runner(opt).run();
-	}
+        new Runner(opt).run();
+    }
 
 }

@@ -20,91 +20,91 @@ import rpc.turbo.util.concurrent.ConcurrentArrayList;
 
 @State(Scope.Benchmark)
 public class ConcurrentArrayListBenchmark {
-	public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
+    public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
 
-	private final ArrayList<Boolean> arrayList = new ArrayList<>();
-	private final ConcurrentArrayList<Boolean> concurrentArrayList = new ConcurrentArrayList<>();
-	private final CopyOnWriteArrayList<Boolean> copyOnWriteArrayList = new CopyOnWriteArrayList<>();
+    private final ArrayList<Boolean> arrayList = new ArrayList<>();
+    private final ConcurrentArrayList<Boolean> concurrentArrayList = new ConcurrentArrayList<>();
+    private final CopyOnWriteArrayList<Boolean> copyOnWriteArrayList = new CopyOnWriteArrayList<>();
 
-	public ConcurrentArrayListBenchmark() {
-		for (int i = 0; i < 1024; i++) {
-			arrayList.add(Boolean.TRUE);
-			concurrentArrayList.add(Boolean.TRUE);
-			copyOnWriteArrayList.add(Boolean.TRUE);
-		}
-	}
+    public ConcurrentArrayListBenchmark() {
+        for (int i = 0; i < 1024; i++) {
+            arrayList.add(Boolean.TRUE);
+            concurrentArrayList.add(Boolean.TRUE);
+            copyOnWriteArrayList.add(Boolean.TRUE);
+        }
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	@Threads(100)
-	public void _do_nothing() {
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    @Threads(100)
+    public void _do_nothing() {
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public Boolean getByArrayList() {
-		return arrayList.get(512);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public Boolean getByArrayList() {
+        return arrayList.get(512);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public Boolean getByConcurrentArrayList() {
-		return concurrentArrayList.get(512);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public Boolean getByConcurrentArrayList() {
+        return concurrentArrayList.get(512);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public Boolean getByCopyOnWriteArrayList() {
-		return copyOnWriteArrayList.get(512);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public Boolean getByCopyOnWriteArrayList() {
+        return copyOnWriteArrayList.get(512);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void newAndPutWithArrayList() {
-		ArrayList<Boolean> arrayList = new ArrayList<>();
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void newAndPutWithArrayList() {
+        ArrayList<Boolean> arrayList = new ArrayList<>();
 
-		for (int i = 0; i < 1024; i++) {
-			arrayList.add(Boolean.TRUE);
-		}
-	}
+        for (int i = 0; i < 1024; i++) {
+            arrayList.add(Boolean.TRUE);
+        }
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void newAndPutWithConcurrentArrayList() {
-		ConcurrentArrayList<Boolean> concurrentArrayList = new ConcurrentArrayList<>(1024);
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void newAndPutWithConcurrentArrayList() {
+        ConcurrentArrayList<Boolean> concurrentArrayList = new ConcurrentArrayList<>(1024);
 
-		for (int i = 0; i < 1024; i++) {
-			concurrentArrayList.add(Boolean.TRUE);
-		}
-	}
+        for (int i = 0; i < 1024; i++) {
+            concurrentArrayList.add(Boolean.TRUE);
+        }
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void newAndPutWithCopyOnWriteArrayList() {
-		CopyOnWriteArrayList<Boolean> copyOnWriteArrayList = new CopyOnWriteArrayList<>();
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void newAndPutWithCopyOnWriteArrayList() {
+        CopyOnWriteArrayList<Boolean> copyOnWriteArrayList = new CopyOnWriteArrayList<>();
 
-		for (int i = 0; i < 1024; i++) {
-			copyOnWriteArrayList.add(Boolean.TRUE);
-		}
-	}
+        for (int i = 0; i < 1024; i++) {
+            copyOnWriteArrayList.add(Boolean.TRUE);
+        }
+    }
 
-	public static void main(String[] args) throws RunnerException {
-		Options opt = new OptionsBuilder()//
-				.include(ConcurrentArrayListBenchmark.class.getSimpleName())//
-				.warmupIterations(5)//
-				.measurementIterations(5)//
-				//.threads(CONCURRENCY)//
-				.forks(1)//
-				.build();
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()//
+                .include(ConcurrentArrayListBenchmark.class.getSimpleName())//
+                .warmupIterations(5)//
+                .measurementIterations(5)//
+                //.threads(CONCURRENCY)//
+                .forks(1)//
+                .build();
 
-		new Runner(opt).run();
-	}
+        new Runner(opt).run();
+    }
 
 }

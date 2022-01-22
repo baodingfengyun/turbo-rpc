@@ -12,35 +12,35 @@ import rpc.turbo.protocol.Response;
 import rpc.turbo.serialization.protostuff.ProtostuffSerializer;
 
 public class ProtostuffSerializerTest {
-	public static void main(String[] args) throws IOException {
-		ProtostuffSerializer serializer = new ProtostuffSerializer();
+    public static void main(String[] args) throws IOException {
+        ProtostuffSerializer serializer = new ProtostuffSerializer();
 
-		UserService userService = new UserServiceServerImpl();
+        UserService userService = new UserServiceServerImpl();
 
-		ByteBufAllocator allocator = new UnpooledByteBufAllocator(true);
-		ByteBuf byteBuf = allocator.directBuffer(16, 1024 * 1024 * 8);
+        ByteBufAllocator allocator = new UnpooledByteBufAllocator(true);
+        ByteBuf byteBuf = allocator.directBuffer(16, 1024 * 1024 * 8);
 
-		Request request = new Request();
-		request.setRequestId(123);
-		request.setServiceId(8);
-		//request.setParams(new Object[] { Integer.valueOf(1), LocalDate.now(), userService.getUser(999).join() });
+        Request request = new Request();
+        request.setRequestId(123);
+        request.setServiceId(8);
+        //request.setParams(new Object[] { Integer.valueOf(1), LocalDate.now(), userService.getUser(999).join() });
 
-		serializer.writeRequest(byteBuf, request);
+        serializer.writeRequest(byteBuf, request);
 
-		byteBuf.readerIndex(4);
-		System.out.println(serializer.readRequest(byteBuf));
+        byteBuf.readerIndex(4);
+        System.out.println(serializer.readRequest(byteBuf));
 
-		byteBuf.clear();
+        byteBuf.clear();
 
-		Response response = new Response();
-		response.setRequestId(321);
-		response.setStatusCode((byte) 1);
-		response.setResult(userService.listUser(0).join());
+        Response response = new Response();
+        response.setRequestId(321);
+        response.setStatusCode((byte) 1);
+        response.setResult(userService.listUser(0).join());
 
-		serializer.writeResponse(byteBuf, response);
+        serializer.writeResponse(byteBuf, response);
 
-		byteBuf.readerIndex(4);
-		System.out.println(serializer.readResponse(byteBuf));
+        byteBuf.readerIndex(4);
+        System.out.println(serializer.readResponse(byteBuf));
 
-	}
+    }
 }

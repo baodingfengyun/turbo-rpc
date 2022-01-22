@@ -30,131 +30,131 @@ import rpc.turbo.util.uuid.ObjectId;
 
 @State(Scope.Thread)
 public class TracerSerializerBenchmark {
-	public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
+    public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
 
-	ByteBufAllocator allocator = new UnpooledByteBufAllocator(true);
+    ByteBufAllocator allocator = new UnpooledByteBufAllocator(true);
 
-	ByteBuf protostuffBuffer = allocator.directBuffer(1024 * 1024, 1024 * 1024);
-	ByteBuf kryoBuffer = allocator.directBuffer(1024 * 1024, 1024 * 1024);
-	ByteBuf tracerSerializerBuffer = allocator.directBuffer(1024 * 1024, 1024 * 1024);
+    ByteBuf protostuffBuffer = allocator.directBuffer(1024 * 1024, 1024 * 1024);
+    ByteBuf kryoBuffer = allocator.directBuffer(1024 * 1024, 1024 * 1024);
+    ByteBuf tracerSerializerBuffer = allocator.directBuffer(1024 * 1024, 1024 * 1024);
 
-	private final Schema<Tracer> tracerSchema = RuntimeSchema.getSchema(Tracer.class);
-	private final Kryo kryo = new Kryo(new FastClassResolver(), new MapReferenceResolver(), new DefaultStreamFactory());
-	private final TracerSerializer tracerSerializer = new TracerSerializer();
+    private final Schema<Tracer> tracerSchema = RuntimeSchema.getSchema(Tracer.class);
+    private final Kryo kryo = new Kryo(new FastClassResolver(), new MapReferenceResolver(), new DefaultStreamFactory());
+    private final TracerSerializer tracerSerializer = new TracerSerializer();
 
-	private final Tracer tracer = new Tracer();
+    private final Tracer tracer = new Tracer();
 
-	public TracerSerializerBenchmark() {
-		tracer.setTraceId(ObjectId.next());
-		tracer.setSpanId(123);
-		tracer.setParentId(456);
+    public TracerSerializerBenchmark() {
+        tracer.setTraceId(ObjectId.next());
+        tracer.setSpanId(123);
+        tracer.setParentId(456);
 
-		try {
-			writeByProtostuff();
+        try {
+            writeByProtostuff();
 
-			System.out.println("protostuffBuffer.length：" + protostuffBuffer.writerIndex());
+            System.out.println("protostuffBuffer.length：" + protostuffBuffer.writerIndex());
 
-			System.out.println(readByProtostuff());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            System.out.println(readByProtostuff());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		try {
-			writeByKryo();
+        try {
+            writeByKryo();
 
-			System.out.println("kryoBuffer.length：" + kryoBuffer.writerIndex());
+            System.out.println("kryoBuffer.length：" + kryoBuffer.writerIndex());
 
-			System.out.println(readByKryo());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+            System.out.println(readByKryo());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-		try {
-			writeByTracerSerializer();
+        try {
+            writeByTracerSerializer();
 
-			System.out.println("tracerSerializerBuffer.length：" + tracerSerializerBuffer.writerIndex());
+            System.out.println("tracerSerializerBuffer.length：" + tracerSerializerBuffer.writerIndex());
 
-			System.out.println(readByTracerSerializer());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            System.out.println(readByTracerSerializer());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void writeByProtostuff() throws Exception {
-		protostuffBuffer.clear();
-		ByteBufOutput output = new ByteBufOutput(protostuffBuffer);
-		tracerSchema.writeTo(output, tracer);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void writeByProtostuff() throws Exception {
+        protostuffBuffer.clear();
+        ByteBufOutput output = new ByteBufOutput(protostuffBuffer);
+        tracerSchema.writeTo(output, tracer);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public Tracer readByProtostuff() throws Exception {
-		protostuffBuffer.readerIndex(0);
-		ByteBufInput input = new ByteBufInput(protostuffBuffer, true);
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public Tracer readByProtostuff() throws Exception {
+        protostuffBuffer.readerIndex(0);
+        ByteBufInput input = new ByteBufInput(protostuffBuffer, true);
 
-		Tracer tracer = tracerSchema.newMessage();
-		tracerSchema.mergeFrom(input, tracer);
+        Tracer tracer = tracerSchema.newMessage();
+        tracerSchema.mergeFrom(input, tracer);
 
-		return tracer;
-	}
+        return tracer;
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void writeByKryo() throws Exception {
-		kryoBuffer.clear();
-		rpc.turbo.serialization.kryo.ByteBufOutput output = new rpc.turbo.serialization.kryo.ByteBufOutput(kryoBuffer);
-		kryo.writeObject(output, tracer);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void writeByKryo() throws Exception {
+        kryoBuffer.clear();
+        rpc.turbo.serialization.kryo.ByteBufOutput output = new rpc.turbo.serialization.kryo.ByteBufOutput(kryoBuffer);
+        kryo.writeObject(output, tracer);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public Tracer readByKryo() throws Exception {
-		kryoBuffer.readerIndex(0);
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public Tracer readByKryo() throws Exception {
+        kryoBuffer.readerIndex(0);
 
-		rpc.turbo.serialization.kryo.ByteBufInput input = new rpc.turbo.serialization.kryo.ByteBufInput(kryoBuffer);
-		Tracer tracer = kryo.readObject(input, Tracer.class);
+        rpc.turbo.serialization.kryo.ByteBufInput input = new rpc.turbo.serialization.kryo.ByteBufInput(kryoBuffer);
+        Tracer tracer = kryo.readObject(input, Tracer.class);
 
-		return tracer;
-	}
+        return tracer;
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void writeByTracerSerializer() throws Exception {
-		tracerSerializerBuffer.clear();
-		tracerSerializer.write(tracerSerializerBuffer, tracer);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void writeByTracerSerializer() throws Exception {
+        tracerSerializerBuffer.clear();
+        tracerSerializer.write(tracerSerializerBuffer, tracer);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public Tracer readByTracerSerializer() throws Exception {
-		tracerSerializerBuffer.readerIndex(0);
-		Tracer tracer = tracerSerializer.read(tracerSerializerBuffer);
-		return tracer;
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public Tracer readByTracerSerializer() throws Exception {
+        tracerSerializerBuffer.readerIndex(0);
+        Tracer tracer = tracerSerializer.read(tracerSerializerBuffer);
+        return tracer;
+    }
 
-	public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 
-		TracerSerializerBenchmark benchmark = new TracerSerializerBenchmark();
-		benchmark.readByKryo();
+        TracerSerializerBenchmark benchmark = new TracerSerializerBenchmark();
+        benchmark.readByKryo();
 
-		Options opt = new OptionsBuilder()//
-				.include(TracerSerializerBenchmark.class.getName())//
-				.warmupIterations(3)//
-				.measurementIterations(3)//
-				.threads(CONCURRENCY)//
-				.forks(1)//
-				.build();
+        Options opt = new OptionsBuilder()//
+                .include(TracerSerializerBenchmark.class.getName())//
+                .warmupIterations(3)//
+                .measurementIterations(3)//
+                .threads(CONCURRENCY)//
+                .forks(1)//
+                .build();
 
-		new Runner(opt).run();
+        new Runner(opt).run();
 
-	}
+    }
 
 }

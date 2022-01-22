@@ -24,70 +24,70 @@ import rpc.turbo.util.URLEncodeUtils;
 @State(Scope.Benchmark)
 public class URLEncodeBenchmark {
 
-	Escaper urlEscaper = UrlEscapers.urlPathSegmentEscaper();
-	private static final URLCodec codecer = new URLCodec("UTF-8");
+    Escaper urlEscaper = UrlEscapers.urlPathSegmentEscaper();
+    private static final URLCodec codecer = new URLCodec("UTF-8");
 
-	private final String str = "aZ Hello, World, 你好，世界！   +++ ---- %%%% @@@";
-	private final String encoded = URLEncodeUtils.encode(str);
+    private final String str = "aZ Hello, World, 你好，世界！   +++ ---- %%%% @@@";
+    private final String encoded = URLEncodeUtils.encode(str);
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public String encodeByURLEncodeUtils() throws Exception {
-		return URLEncodeUtils.encode(str);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public String encodeByURLEncodeUtils() throws Exception {
+        return URLEncodeUtils.encode(str);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public String encodeByJavaURLEncoder() throws Exception {
-		return URLEncoder.encode(str, "UTF-8");
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public String encodeByJavaURLEncoder() throws Exception {
+        return URLEncoder.encode(str, "UTF-8");
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public String encodeByCommonCodecURLCodec() throws Exception {
-		return codecer.encode(str);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public String encodeByCommonCodecURLCodec() throws Exception {
+        return codecer.encode(str);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public String encodeByGuavaUrlEscapers() throws Exception {
-		return urlEscaper.escape(str);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public String encodeByGuavaUrlEscapers() throws Exception {
+        return urlEscaper.escape(str);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public String decodeByURLEncodeUtils() throws Exception {
-		return URLEncodeUtils.decode(encoded, StandardCharsets.UTF_8);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public String decodeByURLEncodeUtils() throws Exception {
+        return URLEncodeUtils.decode(encoded, StandardCharsets.UTF_8);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public String decodeByJavaURLEncoder() throws Exception {
-		return URLDecoder.decode(encoded, "UTF-8");
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public String decodeByJavaURLEncoder() throws Exception {
+        return URLDecoder.decode(encoded, "UTF-8");
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public String decodeByCommonCodecURLCodec() throws Exception {
-		return codecer.decode(encoded);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public String decodeByCommonCodecURLCodec() throws Exception {
+        return codecer.decode(encoded);
+    }
 
-	public static void main(String[] args) throws Exception {
-		Options opt = new OptionsBuilder()//
-				.include(URLEncodeBenchmark.class.getSimpleName())//
-				.warmupIterations(5)//
-				.measurementIterations(5)//
-				.threads(4)//
-				.forks(1)//
-				.build();
+    public static void main(String[] args) throws Exception {
+        Options opt = new OptionsBuilder()//
+                .include(URLEncodeBenchmark.class.getSimpleName())//
+                .warmupIterations(5)//
+                .measurementIterations(5)//
+                .threads(4)//
+                .forks(1)//
+                .build();
 
-		new Runner(opt).run();
-	}
+        new Runner(opt).run();
+    }
 }

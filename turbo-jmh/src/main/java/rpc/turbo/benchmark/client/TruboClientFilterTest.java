@@ -14,42 +14,42 @@ import rpc.turbo.trace.Tracer;
 @Component
 public class TruboClientFilterTest implements TurboClientAware {
 
-	@Override
-	public void setTurboClient(TurboClient turboClient) {
-		turboClient.addFirst(new RpcClientFilter() {
+    @Override
+    public void setTurboClient(TurboClient turboClient) {
+        turboClient.addFirst(new RpcClientFilter() {
 
-			@Override
-			public boolean onSend(Request request) {
-				try {
-					Tracer tracer = TracerContext.nextTracer();
+            @Override
+            public boolean onSend(Request request) {
+                try {
+                    Tracer tracer = TracerContext.nextTracer();
 
-					if (tracer != null) {
-						RemoteContext.getClientAddress().toString();
-						RemoteContext.getServerAddress().toString();
-						RemoteContext.getServiceMethodName();
+                    if (tracer != null) {
+                        RemoteContext.getClientAddress().toString();
+                        RemoteContext.getServerAddress().toString();
+                        RemoteContext.getServiceMethodName();
 
-						request.setTracer(tracer);
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+                        request.setTracer(tracer);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-				System.out.println(request);
+                System.out.println(request);
 
-				return true;
-			}
+                return true;
+            }
 
-			@Override
-			public void onRecive(Request request, Response response) {
-				System.out.println(response);
-			}
+            @Override
+            public void onRecive(Request request, Response response) {
+                System.out.println(response);
+            }
 
-			@Override
-			public void onError(Request request, Response response, Throwable throwable) {
-				System.out.println(throwable);
-			}
-		});
+            @Override
+            public void onError(Request request, Response response, Throwable throwable) {
+                System.out.println(throwable);
+            }
+        });
 
-	}
+    }
 
 }

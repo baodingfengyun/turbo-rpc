@@ -16,60 +16,58 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import rpc.turbo.util.HexUtils;
 
 /**
- * 
  * @author Hank
- *
  */
 @State(Scope.Benchmark)
 public class HexBenchmark2 {
-	public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
+    public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void _do_nothing() {
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void _do_nothing() {
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public String int_HexUtils_toHex() {
-		return HexUtils.toHex(Integer.MAX_VALUE);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public String int_HexUtils_toHex() {
+        return HexUtils.toHex(Integer.MAX_VALUE);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public String int_Integer_toHexString() {
-		return Integer.toHexString(Integer.MAX_VALUE);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public String int_Integer_toHexString() {
+        return Integer.toHexString(Integer.MAX_VALUE);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public String long_HexUtils_toHex() {
-		return HexUtils.toHex(Long.MAX_VALUE);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public String long_HexUtils_toHex() {
+        return HexUtils.toHex(Long.MAX_VALUE);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public String long_Long_toHexString() {
-		return Long.toHexString(Long.MAX_VALUE);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public String long_Long_toHexString() {
+        return Long.toHexString(Long.MAX_VALUE);
+    }
 
-	public static void main(String[] args) throws RunnerException {
+    public static void main(String[] args) throws RunnerException {
 
-		Options opt = new OptionsBuilder()//
-				.include(HexBenchmark2.class.getSimpleName())//
-				.warmupIterations(3)//
-				.measurementIterations(3)//
-				.threads(CONCURRENCY)//
-				.forks(1)//
-				.build();
+        Options opt = new OptionsBuilder()//
+                .include(HexBenchmark2.class.getSimpleName())//
+                .warmupIterations(3)//
+                .measurementIterations(3)//
+                .threads(CONCURRENCY)//
+                .forks(1)//
+                .build();
 
-		new Runner(opt).run();
+        new Runner(opt).run();
 
-	}
+    }
 
 }

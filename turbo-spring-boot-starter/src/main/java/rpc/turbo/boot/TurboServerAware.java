@@ -1,7 +1,6 @@
 package rpc.turbo.boot;
 
 import org.springframework.beans.factory.Aware;
-
 import rpc.turbo.server.TurboServer;
 
 /**
@@ -9,11 +8,11 @@ import rpc.turbo.server.TurboServer;
  */
 public interface TurboServerAware extends Aware {
 
-	/**
-	 * 初始化完成后调用
-	 * 
-	 * @param turboServer
-	 */
-	void setTurboServer(TurboServer turboServer);
+    /**
+     * 初始化完成后调用
+     *
+     * @param turboServer
+     */
+    void setTurboServer(TurboServer turboServer);
 
 }

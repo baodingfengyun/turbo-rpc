@@ -17,40 +17,40 @@ import rpc.turbo.util.IPUtils;
 
 @State(Scope.Benchmark)
 public class IPUtilsBenchmark {
-	public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
+    public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
 
-	private final String ip = "192.168.1.18";
+    private final String ip = "192.168.1.18";
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public void _do_nothing() {
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public void _do_nothing() {
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public int ipToInt() {
-		return IPUtils.ipToInt(ip);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public int ipToInt() {
+        return IPUtils.ipToInt(ip);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public long ipToLong() {
-		return IPUtils.ipToLong(ip);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public long ipToLong() {
+        return IPUtils.ipToLong(ip);
+    }
 
-	public static void main(String[] args) throws RunnerException {
-		Options opt = new OptionsBuilder()//
-				.include(IPUtilsBenchmark.class.getSimpleName())//
-				.warmupIterations(3)//
-				.measurementIterations(3)//
-				.threads(CONCURRENCY)//
-				.forks(1)//
-				.build();
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()//
+                .include(IPUtilsBenchmark.class.getSimpleName())//
+                .warmupIterations(3)//
+                .measurementIterations(3)//
+                .threads(CONCURRENCY)//
+                .forks(1)//
+                .build();
 
-		new Runner(opt).run();
-	}
+        new Runner(opt).run();
+    }
 
 }

@@ -28,144 +28,144 @@ import rpc.turbo.client.TurboClient;
 @State(Scope.Benchmark)
 public class RpcClientBenchmark extends AbstractClient {
 
-	public static final int CONCURRENCY = 32;
+    public static final int CONCURRENCY = 32;
 
-	private final TurboClient client;
-	private final UserService userService;
+    private final TurboClient client;
+    private final UserService userService;
 
-	public RpcClientBenchmark() {
+    public RpcClientBenchmark() {
 
-		// client = new TurboClient();
-		// client.addConnect("shop", "auth", new HostPort("127.0.0.1", 8080));
-		client = new TurboClient("turbo-client.conf");
+        // client = new TurboClient();
+        // client.addConnect("shop", "auth", new HostPort("127.0.0.1", 8080));
+        client = new TurboClient("turbo-client.conf");
 
-		try {
-			/*
-			 * client.addFirst(new RpcClientFilter() {
-			 * 
-			 * @Override public boolean onSend(Request request) { try { Tracer tracer =
-			 * TracerContext.nextTracer();
-			 * 
-			 * if (tracer != null) { RemoteContext.getClientAddress().toString();
-			 * RemoteContext.getServerAddress().toString();
-			 * RemoteContext.getServiceMethodName();
-			 * 
-			 * request.setTracer(tracer); } } catch (Exception e) { e.printStackTrace(); }
-			 * 
-			 * return true; }
-			 * 
-			 * @Override public void onRecive(Request request, Response response) { }
-			 * 
-			 * @Override public void onError(Request request, Response response, Throwable
-			 * throwable) { } });
-			 */
+        try {
+            /*
+             * client.addFirst(new RpcClientFilter() {
+             *
+             * @Override public boolean onSend(Request request) { try { Tracer tracer =
+             * TracerContext.nextTracer();
+             *
+             * if (tracer != null) { RemoteContext.getClientAddress().toString();
+             * RemoteContext.getServerAddress().toString();
+             * RemoteContext.getServiceMethodName();
+             *
+             * request.setTracer(tracer); } } catch (Exception e) { e.printStackTrace(); }
+             *
+             * return true; }
+             *
+             * @Override public void onRecive(Request request, Response response) { }
+             *
+             * @Override public void onError(Request request, Response response, Throwable
+             * throwable) { } });
+             */
 
-			client.register(UserService.class);
-			userService = client.getService(UserService.class);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+            client.register(UserService.class);
+            userService = client.getService(UserService.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	@Override
-	protected UserService getUserService() {
-		return userService;
-	}
+    @Override
+    protected UserService getUserService() {
+        return userService;
+    }
 
-	@TearDown
-	public void close() throws IOException {
-		client.close();
-	}
+    @TearDown
+    public void close() throws IOException {
+        client.close();
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	@Override
-	public Object existUser() throws Exception {
-		return super.existUser();
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Override
+    public Object existUser() throws Exception {
+        return super.existUser();
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	@Override
-	public Object createUser() throws Exception {
-		return super.createUser();
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Override
+    public Object createUser() throws Exception {
+        return super.createUser();
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	@Override
-	public Object getUser() throws Exception {
-		return super.getUser();
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Override
+    public Object getUser() throws Exception {
+        return super.getUser();
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	@Override
-	public Object listUser() throws Exception {
-		return super.listUser();
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    @Override
+    public Object listUser() throws Exception {
+        return super.listUser();
+    }
 
-	public static void main(String[] args) throws Exception {
-		ResourceLeakDetector.setLevel(Level.DISABLED);
-		// CtClass.debugDump = "d:/debugDump";
+    public static void main(String[] args) throws Exception {
+        ResourceLeakDetector.setLevel(Level.DISABLED);
+        // CtClass.debugDump = "d:/debugDump";
 
-		RpcClientBenchmark clientBenchmark = new RpcClientBenchmark();
-		// System.out.println(clientBenchmark.existUser());
-		// System.out.println(clientBenchmark.getUser());
-		// System.out.println(clientBenchmark.listUser());
-		// System.out.println(clientBenchmark.createUser());
+        RpcClientBenchmark clientBenchmark = new RpcClientBenchmark();
+        // System.out.println(clientBenchmark.existUser());
+        // System.out.println(clientBenchmark.getUser());
+        // System.out.println(clientBenchmark.listUser());
+        // System.out.println(clientBenchmark.createUser());
 
-		// System.exit(1);
+        // System.exit(1);
 
-		ArrayBlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(256);
-		RejectedExecutionHandler rejectedExecutionHandler = new ThreadPoolExecutor.CallerRunsPolicy();
-		ThreadPoolExecutor executor = new ThreadPoolExecutor(256, 256, Long.MAX_VALUE, TimeUnit.DAYS, workQueue,
-				rejectedExecutionHandler);
+        ArrayBlockingQueue<Runnable> workQueue = new ArrayBlockingQueue<>(256);
+        RejectedExecutionHandler rejectedExecutionHandler = new ThreadPoolExecutor.CallerRunsPolicy();
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(256, 256, Long.MAX_VALUE, TimeUnit.DAYS, workQueue,
+                rejectedExecutionHandler);
 
-		Instant last = Instant.now();
-		for (int i = 0; i < 1/*Long.MAX_VALUE*/; i++) {
+        Instant last = Instant.now();
+        for (int i = 0; i < 1/*Long.MAX_VALUE*/; i++) {
 
-			executor.submit(() -> {
-				try {
-					clientBenchmark.createUser();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			});
-			// clientBenchmark.getUser();
+            executor.submit(() -> {
+                try {
+                    clientBenchmark.createUser();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            // clientBenchmark.getUser();
 
-			if (i % 1_000_000 == 0) {
-				Instant now = Instant.now();
-				Duration duration = Duration.between(last, now);
-				last = now;
+            if (i % 1_000_000 == 0) {
+                Instant now = Instant.now();
+                Duration duration = Duration.between(last, now);
+                last = now;
 
-				System.out.println(i + " \t " + duration);
+                System.out.println(i + " \t " + duration);
 
-				if (i == 2_000_000_000) {
-					executor.shutdownNow();
-					clientBenchmark.close();
+                if (i == 2_000_000_000) {
+                    executor.shutdownNow();
+                    clientBenchmark.close();
 
-					System.exit(1);
-				}
-			}
-		}
+                    System.exit(1);
+                }
+            }
+        }
 
-		clientBenchmark.close();
+        clientBenchmark.close();
 
-		Options opt = new OptionsBuilder()//
-				.include(RpcClientBenchmark.class.getSimpleName())//
-				.warmupIterations(3)//
-				.warmupTime(TimeValue.seconds(10))//
-				.measurementIterations(3)//
-				.measurementTime(TimeValue.seconds(10))//
-				.threads(CONCURRENCY)//
-				.forks(1)//
-				.build();
+        Options opt = new OptionsBuilder()//
+                .include(RpcClientBenchmark.class.getSimpleName())//
+                .warmupIterations(3)//
+                .warmupTime(TimeValue.seconds(10))//
+                .measurementIterations(3)//
+                .measurementTime(TimeValue.seconds(10))//
+                .threads(CONCURRENCY)//
+                .forks(1)//
+                .build();
 
-		new Runner(opt).run();
-	}
+        new Runner(opt).run();
+    }
 }

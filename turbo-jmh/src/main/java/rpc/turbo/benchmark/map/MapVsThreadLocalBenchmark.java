@@ -21,137 +21,135 @@ import rpc.turbo.benchmark.service.UserService;
 import rpc.turbo.benchmark.service.UserServiceServerImpl;
 
 /**
- * 
  * @author Hank
- *
  */
 @State(Scope.Benchmark)
 public class MapVsThreadLocalBenchmark {
-	public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
+    public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
 
-	private final UserService userService = new UserServiceServerImpl();
+    private final UserService userService = new UserServiceServerImpl();
 
-	private final ThreadLocal<User> userThreadLocal = new ThreadLocal<>();
-	private final HashMap<Integer, User> userMap = new HashMap<>();
-	private final ConcurrentHashMap<Integer, User> userConcurrentMap = new ConcurrentHashMap<>();
-	private final CopyOnWriteArrayList<User> userList = new CopyOnWriteArrayList<>();
-	private User directUser = userService.getUser(12345L).join();
-	private volatile User volatileUser = userService.getUser(12345L).join();
+    private final ThreadLocal<User> userThreadLocal = new ThreadLocal<>();
+    private final HashMap<Integer, User> userMap = new HashMap<>();
+    private final ConcurrentHashMap<Integer, User> userConcurrentMap = new ConcurrentHashMap<>();
+    private final CopyOnWriteArrayList<User> userList = new CopyOnWriteArrayList<>();
+    private User directUser = userService.getUser(12345L).join();
+    private volatile User volatileUser = userService.getUser(12345L).join();
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public User directGet() {
-		User user = directUser;
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public User directGet() {
+        User user = directUser;
 
-		if (user != null && user.getId() == 12345L) {
-			return user;
-		}
+        if (user != null && user.getId() == 12345L) {
+            return user;
+        }
 
-		user = userService.getUser(12345L).join();
-		directUser = user;
+        user = userService.getUser(12345L).join();
+        directUser = user;
 
-		return user;
-	}
+        return user;
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public User volatileGet() {
-		User user = volatileUser;
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public User volatileGet() {
+        User user = volatileUser;
 
-		if (user != null && user.getId() == 12345L) {
-			return user;
-		}
+        if (user != null && user.getId() == 12345L) {
+            return user;
+        }
 
-		user = userService.getUser(12345L).join();
-		volatileUser = user;
+        user = userService.getUser(12345L).join();
+        volatileUser = user;
 
-		return user;
-	}
+        return user;
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public User copyOnWriteArrayList() {
-		if (userList.isEmpty()) {
-			synchronized (userList) {
-				if (userList.isEmpty()) {
-					for (int i = 0; i < 12345 + 1; i++) {
-						User user = userService.getUser(i).join();
-						userMap.put(i, user);
-						userConcurrentMap.put(i, user);
-						userList.add(user);
-					}
-				}
-			}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public User copyOnWriteArrayList() {
+        if (userList.isEmpty()) {
+            synchronized (userList) {
+                if (userList.isEmpty()) {
+                    for (int i = 0; i < 12345 + 1; i++) {
+                        User user = userService.getUser(i).join();
+                        userMap.put(i, user);
+                        userConcurrentMap.put(i, user);
+                        userList.add(user);
+                    }
+                }
+            }
 
-		}
+        }
 
-		User user = userList.get(12345);
+        User user = userList.get(12345);
 
-		if (user != null) {
-			return user;
-		}
+        if (user != null) {
+            return user;
+        }
 
-		return user;
-	}
+        return user;
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public User threadLocal() {
-		User user = userThreadLocal.get();
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public User threadLocal() {
+        User user = userThreadLocal.get();
 
-		if (user != null && user.getId() == 12345L) {
-			return user;
-		}
+        if (user != null && user.getId() == 12345L) {
+            return user;
+        }
 
-		user = userService.getUser(12345L).join();
-		userThreadLocal.set(user);
+        user = userService.getUser(12345L).join();
+        userThreadLocal.set(user);
 
-		return user;
-	}
+        return user;
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public User concurrentHashMap() {
-		User user = userConcurrentMap.get(12345);
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public User concurrentHashMap() {
+        User user = userConcurrentMap.get(12345);
 
-		if (user != null) {
-			return user;
-		}
+        if (user != null) {
+            return user;
+        }
 
-		user = userService.getUser(12345L).join();
-		userConcurrentMap.put(12345, user);
+        user = userService.getUser(12345L).join();
+        userConcurrentMap.put(12345, user);
 
-		return user;
-	}
+        return user;
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MICROSECONDS)
-	public User hashMap() {
-		User user = userMap.get(12345);
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MICROSECONDS)
+    public User hashMap() {
+        User user = userMap.get(12345);
 
-		if (user != null) {
-			return user;
-		}
+        if (user != null) {
+            return user;
+        }
 
-		return user;
-	}
+        return user;
+    }
 
-	public static void main(String[] args) throws RunnerException {
-		Options opt = new OptionsBuilder()//
-				.include(MapVsThreadLocalBenchmark.class.getSimpleName())//
-				.warmupIterations(5)//
-				.measurementIterations(5)//
-				.threads(CONCURRENCY)//
-				.forks(1)//
-				.build();
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()//
+                .include(MapVsThreadLocalBenchmark.class.getSimpleName())//
+                .warmupIterations(5)//
+                .measurementIterations(5)//
+                .threads(CONCURRENCY)//
+                .forks(1)//
+                .build();
 
-		new Runner(opt).run();
-	}
+        new Runner(opt).run();
+    }
 
 }

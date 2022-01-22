@@ -1,120 +1,128 @@
 package rpc.turbo.config;
 
-import java.lang.reflect.Method;
-
 import rpc.turbo.annotation.TurboService;
 import rpc.turbo.invoke.InvokerUtils;
 
+import java.lang.reflect.Method;
+
 /**
  * 服务端、客户端通用
- * 
- * @author Hank
  *
+ * @author Hank
  */
 public class MethodConfig {
-	/** 服务方法 */
-	public final Method method;
-	/** 版本 */
-	public final String version;
-	/** millseconds */
-	public final long timeout;
-	/** 忽略 */
-	public final boolean ignore;
-	/** rest路径 */
-	public final String rest;
+    /**
+     * 服务方法
+     */
+    public final Method method;
+    /**
+     * 版本
+     */
+    public final String version;
+    /**
+     * millseconds
+     */
+    public final long timeout;
+    /**
+     * 忽略
+     */
+    public final boolean ignore;
+    /**
+     * rest路径
+     */
+    public final String rest;
 
-	/**
-	 * @param method
-	 *            服务方法
-	 */
-	public MethodConfig(Method method) {
-		this.method = method;
+    /**
+     * @param method 服务方法
+     */
+    public MethodConfig(Method method) {
+        this.method = method;
 
-		this.version = version(method);
-		this.timeout = timeout(method);
-		this.ignore = ignore(method);
-		this.rest = rest(method);
-	}
+        this.version = version(method);
+        this.timeout = timeout(method);
+        this.ignore = ignore(method);
+        this.rest = rest(method);
+    }
 
-	public MethodConfig(Method method, String version, long timeout, boolean ignore, String rest) {
-		this.method = method;
-		this.version = version;
-		this.timeout = timeout;
-		this.ignore = ignore;
-		this.rest = rest;
-	}
+    public MethodConfig(Method method, String version, long timeout, boolean ignore, String rest) {
+        this.method = method;
+        this.version = version;
+        this.timeout = timeout;
+        this.ignore = ignore;
+        this.rest = rest;
+    }
 
-	private String version(Method method) {
-		String version = TurboService.DEFAULT_VERSION;
+    private String version(Method method) {
+        String version = TurboService.DEFAULT_VERSION;
 
-		TurboService config = method.getDeclaringClass().getAnnotation(TurboService.class);
-		if (config == null) {
-			config = method.getAnnotation(TurboService.class);
-		}
+        TurboService config = method.getDeclaringClass().getAnnotation(TurboService.class);
+        if (config == null) {
+            config = method.getAnnotation(TurboService.class);
+        }
 
-		if (config != null) {
-			version = config.version();
-		}
+        if (config != null) {
+            version = config.version();
+        }
 
-		int delimterIndex = version.indexOf('.');
-		if (delimterIndex > 0) {
-			version = version.substring(0, delimterIndex);
-		}
+        int delimterIndex = version.indexOf('.');
+        if (delimterIndex > 0) {
+            version = version.substring(0, delimterIndex);
+        }
 
-		return version;
-	}
+        return version;
+    }
 
-	private long timeout(Method method) {
-		long timeout = TurboService.DEFAULT_TIME_OUT;
+    private long timeout(Method method) {
+        long timeout = TurboService.DEFAULT_TIME_OUT;
 
-		TurboService config = method.getDeclaringClass().getAnnotation(TurboService.class);
-		if (config == null) {
-			config = method.getAnnotation(TurboService.class);
-		}
+        TurboService config = method.getDeclaringClass().getAnnotation(TurboService.class);
+        if (config == null) {
+            config = method.getAnnotation(TurboService.class);
+        }
 
-		if (config != null) {
-			timeout = config.timeout();
-		}
+        if (config != null) {
+            timeout = config.timeout();
+        }
 
-		if (timeout < 1) {
-			timeout = TurboService.DEFAULT_TIME_OUT;
-		}
+        if (timeout < 1) {
+            timeout = TurboService.DEFAULT_TIME_OUT;
+        }
 
-		return timeout;
-	}
+        return timeout;
+    }
 
-	private boolean ignore(Method method) {
-		boolean ignore = TurboService.DEFAULT_IGNORE;
+    private boolean ignore(Method method) {
+        boolean ignore = TurboService.DEFAULT_IGNORE;
 
-		TurboService config = method.getDeclaringClass().getAnnotation(TurboService.class);
+        TurboService config = method.getDeclaringClass().getAnnotation(TurboService.class);
 
-		if (config != null) {
-			ignore = config.ignore();
-		}
+        if (config != null) {
+            ignore = config.ignore();
+        }
 
-		if (!ignore) {
-			config = method.getAnnotation(TurboService.class);
+        if (!ignore) {
+            config = method.getAnnotation(TurboService.class);
 
-			if (config != null) {
-				ignore = config.ignore();
-			}
-		}
+            if (config != null) {
+                ignore = config.ignore();
+            }
+        }
 
-		return ignore;
-	}
+        return ignore;
+    }
 
-	private String rest(Method method) {
-		return InvokerUtils.getRestPath(method);
-	}
+    private String rest(Method method) {
+        return InvokerUtils.getRestPath(method);
+    }
 
-	@Override
-	public String toString() {
-		return "RemoteMethodConfig{" + //
-				"method=" + method + //
-				", version='" + version + '\'' + //
-				", timeout=" + timeout + //
-				", ignore=" + ignore + //
-				", rest='" + rest + '\'' + //
-				'}';
-	}
+    @Override
+    public String toString() {
+        return "RemoteMethodConfig{" + //
+                "method=" + method + //
+                ", version='" + version + '\'' + //
+                ", timeout=" + timeout + //
+                ", ignore=" + ignore + //
+                ", rest='" + rest + '\'' + //
+                '}';
+    }
 }

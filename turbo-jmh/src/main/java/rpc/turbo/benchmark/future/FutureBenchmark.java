@@ -17,99 +17,97 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import rpc.turbo.util.concurrent.FutureUtils;
 
 /**
- * 
  * @author Hank
- *
  */
 @State(Scope.Benchmark)
 public class FutureBenchmark {
-	public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
+    public static final int CONCURRENCY = Runtime.getRuntime().availableProcessors();
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	public Object boxInteger1() {
-		return Integer.valueOf(1);
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public Object boxInteger1() {
+        return Integer.valueOf(1);
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	public Object completableFuture1() {
-		return CompletableFuture.completedFuture(Integer.valueOf(1)).join();
-	}
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public Object completableFuture1() {
+        return CompletableFuture.completedFuture(Integer.valueOf(1)).join();
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	public Object completableFutureWithTimeout() {
-		CompletableFuture<Integer> future = new CompletableFuture<>();
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public Object completableFutureWithTimeout() {
+        CompletableFuture<Integer> future = new CompletableFuture<>();
 
-		future.orTimeout(1, TimeUnit.SECONDS);
+        future.orTimeout(1, TimeUnit.SECONDS);
 
-		future.complete(Integer.valueOf(1));
+        future.complete(Integer.valueOf(1));
 
-		return future.join();
-	}
+        return future.join();
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	public Object completableFutureWithFailover() {
-		CompletableFuture<Integer> future = new CompletableFuture<>();
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public Object completableFutureWithFailover() {
+        CompletableFuture<Integer> future = new CompletableFuture<>();
 
-		CompletableFuture<Integer> futureWithFailover = FutureUtils.withFailover(//
-				future, () -> CompletableFuture.completedFuture(Integer.valueOf(100)));
+        CompletableFuture<Integer> futureWithFailover = FutureUtils.withFailover(//
+                future, () -> CompletableFuture.completedFuture(Integer.valueOf(100)));
 
-		future.complete(Integer.valueOf(1));
+        future.complete(Integer.valueOf(1));
 
-		return futureWithFailover.join();
-	}
+        return futureWithFailover.join();
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	public Object when() {
-		CompletableFuture<Integer> future = new CompletableFuture<>();
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public Object when() {
+        CompletableFuture<Integer> future = new CompletableFuture<>();
 
-		future.whenComplete((r, t) -> {
+        future.whenComplete((r, t) -> {
 
-		});
+        });
 
-		future.complete(Integer.valueOf(1));
+        future.complete(Integer.valueOf(1));
 
-		return future.join();
-	}
+        return future.join();
+    }
 
-	@Benchmark
-	@BenchmarkMode({ Mode.Throughput })
-	@OutputTimeUnit(TimeUnit.MILLISECONDS)
-	public Object whenWhen() {
-		CompletableFuture<Integer> future = new CompletableFuture<>();
+    @Benchmark
+    @BenchmarkMode({Mode.Throughput})
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public Object whenWhen() {
+        CompletableFuture<Integer> future = new CompletableFuture<>();
 
-		future.whenComplete((r, t) -> {
+        future.whenComplete((r, t) -> {
 
-		}).whenComplete((r, t) -> {
+        }).whenComplete((r, t) -> {
 
-		});
+        });
 
-		future.complete(Integer.valueOf(1));
+        future.complete(Integer.valueOf(1));
 
-		return future.join();
-	}
+        return future.join();
+    }
 
-	public static void main(String[] args) throws RunnerException {
-		Options opt = new OptionsBuilder()//
-				.include(FutureBenchmark.class.getSimpleName())//
-				.warmupIterations(3)//
-				.measurementIterations(2)//
-				.threads(CONCURRENCY)//
-				.forks(1)//
-				.build();
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()//
+                .include(FutureBenchmark.class.getSimpleName())//
+                .warmupIterations(3)//
+                .measurementIterations(2)//
+                .threads(CONCURRENCY)//
+                .forks(1)//
+                .build();
 
-		new Runner(opt).run();
+        new Runner(opt).run();
 
-		// new InvokerBenchmark();
-	}
+        // new InvokerBenchmark();
+    }
 
 }

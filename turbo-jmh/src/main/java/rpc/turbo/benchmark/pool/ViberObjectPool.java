@@ -12,57 +12,57 @@ import org.vibur.objectpool.util.MultithreadConcurrentQueueCollection;
 
 public class ViberObjectPool<T> implements Closeable {
 
-	private final PoolService<T> pool;
+    private final PoolService<T> pool;
 
-	public ViberObjectPool(int poolSize, Supplier<T> producer) {
-		PoolObjectFactory<T> poolObjectFactory = new PoolObjectFactory<T>() {
+    public ViberObjectPool(int poolSize, Supplier<T> producer) {
+        PoolObjectFactory<T> poolObjectFactory = new PoolObjectFactory<T>() {
 
-			@Override
-			public T create() {
-				return producer.get();
-			}
+            @Override
+            public T create() {
+                return producer.get();
+            }
 
-			@Override
-			public boolean readyToTake(T obj) {
-				return true;
-			}
+            @Override
+            public boolean readyToTake(T obj) {
+                return true;
+            }
 
-			@Override
-			public boolean readyToRestore(T obj) {
-				return true;
-			}
+            @Override
+            public boolean readyToRestore(T obj) {
+                return true;
+            }
 
-			@Override
-			public void destroy(T obj) {
-				if (obj instanceof AutoCloseable) {
-					try {
-						((AutoCloseable) obj).close();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
+            @Override
+            public void destroy(T obj) {
+                if (obj instanceof AutoCloseable) {
+                    try {
+                        ((AutoCloseable) obj).close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
 
-		ConcurrentCollection<T> concurrentCollection = new  MultithreadConcurrentQueueCollection<>(poolSize);
-		pool = new ConcurrentPool<>(concurrentCollection, poolObjectFactory, poolSize, poolSize, false);
-	}
+        ConcurrentCollection<T> concurrentCollection = new MultithreadConcurrentQueueCollection<>(poolSize);
+        pool = new ConcurrentPool<>(concurrentCollection, poolObjectFactory, poolSize, poolSize, false);
+    }
 
-	public T borrow() {
-		return pool.take();
-	}
+    public T borrow() {
+        return pool.take();
+    }
 
-	public void release(T t) {
-		if (t == null) {
-			return;
-		}
+    public void release(T t) {
+        if (t == null) {
+            return;
+        }
 
-		pool.restore(t);
-	}
+        pool.restore(t);
+    }
 
-	@Override
-	public void close() throws IOException {
-		pool.close();
-	}
+    @Override
+    public void close() throws IOException {
+        pool.close();
+    }
 
 }

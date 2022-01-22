@@ -10,16 +10,16 @@ import rpc.turbo.config.HostPort;
 import rpc.turbo.server.TurboServer;
 
 public class RestServerBenchmark {
-	public static void main(String[] args) throws Exception {
-		ResourceLeakDetector.setLevel(Level.DISABLED);
-		// CtClass.debugDump = "d:/debugDump";
+    public static void main(String[] args) throws Exception {
+        ResourceLeakDetector.setLevel(Level.DISABLED);
+        // CtClass.debugDump = "d:/debugDump";
 
-		try (TurboServer server = new TurboServer("shop", "auth");) {
-			Map<Class<?>, Object> services = Map.of(UserService.class, new UserServiceServerImpl());
-			server.registerService(services);
+        try (TurboServer server = new TurboServer("shop", "auth");) {
+            Map<Class<?>, Object> services = Map.of(UserService.class, new UserServiceServerImpl());
+            server.registerService(services);
 
-			server.startRestServer(new HostPort("0.0.0.0", 8080));
-			server.waitUntilShutdown();
-		}
-	}
+            server.startRestServer(new HostPort("0.0.0.0", 8080));
+            server.waitUntilShutdown();
+        }
+    }
 }

@@ -11,11 +11,11 @@ import rpc.turbo.param.MethodParamClassFactory;
 
 public class MethodParamClassFactoryTest {
 
-	public static void main(String[] args) throws CannotCompileException, NotFoundException, IOException {
-		CtClass.debugDump = "/tmp/debugDump";
+    public static void main(String[] args) throws CannotCompileException, NotFoundException, IOException {
+        CtClass.debugDump = "/tmp/debugDump";
 
-		for (Method method : UserService.class.getMethods()) {
-			MethodParamClassFactory.createClass(method);
-		}
-	}
+        for (Method method : UserService.class.getMethods()) {
+            MethodParamClassFactory.createClass(method);
+        }
+    }
 }

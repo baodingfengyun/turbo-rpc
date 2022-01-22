@@ -12,15 +12,15 @@ import rpc.turbo.boot.EnableTurboClient;
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 
-@SpringBootApplication(scanBasePackages = { "com.hello" })
+@SpringBootApplication(scanBasePackages = {"com.hello"})
 @EnableTurboClient
 public class HelloBootTest {
 
-	@Autowired
-	HelloService helloService;
+    @Autowired
+    HelloService helloService;
 
 
-	public static void main(String[] args) {
-		SpringApplication.run(HelloBootTest.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(HelloBootTest.class, args);
+    }
 }

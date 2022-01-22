@@ -11,12 +11,12 @@ import java.util.concurrent.CompletableFuture;
 @TurboFailover(service = UserService.class)
 public class UserServiceFailover {
 
-	public CompletableFuture<Boolean> createUser(User user) {
-		return CompletableFuture.completedFuture(Boolean.FALSE);
-	}
+    public CompletableFuture<Boolean> createUser(User user) {
+        return CompletableFuture.completedFuture(Boolean.FALSE);
+    }
 
-	public static void main(String[] args) {
-		System.out.println(Arrays.toString(UserServiceServerImpl.class.getDeclaredClasses()));
-	}
+    public static void main(String[] args) {
+        System.out.println(Arrays.toString(UserServiceServerImpl.class.getDeclaredClasses()));
+    }
 
 }
