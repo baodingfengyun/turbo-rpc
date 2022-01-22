@@ -9,7 +9,6 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache.StartMode;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
-import org.jboss.netty.util.internal.ConcurrentHashMap;
 import rpc.turbo.config.AddressWithWeight;
 import rpc.turbo.config.HostPort;
 import rpc.turbo.config.server.Protocol;
@@ -21,6 +20,7 @@ import rpc.turbo.zk.common.ForeverRetryPolicy;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 

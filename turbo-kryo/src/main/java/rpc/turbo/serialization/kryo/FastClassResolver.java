@@ -81,6 +81,11 @@ public class FastClassResolver implements ClassResolver {
         return registration;
     }
 
+    @Override
+    public Registration unregister(int classID) {
+        return null;
+    }
+
     public Registration registerImplicit(Class type) {
         return register(new Registration(type, kryo.getDefaultSerializer(type), NAME));
     }
@@ -103,7 +108,7 @@ public class FastClassResolver implements ClassResolver {
     public Registration writeClass(Output output, Class type) {
         if (type == null) {
             if (TRACE || (DEBUG && kryo.getDepth() == 1))
-                log("Write", null);
+                trace("Write", "null");
             output.writeVarInt(Kryo.NULL, true);
             return null;
         }
@@ -145,7 +150,7 @@ public class FastClassResolver implements ClassResolver {
         switch (classID) {
             case Kryo.NULL:
                 if (TRACE || (DEBUG && kryo.getDepth() == 1))
-                    log("Read", null);
+                    trace("Read", "null");
                 return null;
             case NAME + 2: // Offset for NAME and NULL.
                 return readName(input);

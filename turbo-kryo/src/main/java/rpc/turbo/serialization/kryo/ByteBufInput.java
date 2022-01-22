@@ -52,11 +52,6 @@ public class ByteBufInput extends Input {
         return byteBuf;
     }
 
-    public void rewind() {
-        super.rewind();
-        byteBuf.readerIndex(0);
-    }
-
     /**
      * Fills the byteBuf with more bytes. Can be overridden to fill the bytes from a
      * source other than the InputStream.

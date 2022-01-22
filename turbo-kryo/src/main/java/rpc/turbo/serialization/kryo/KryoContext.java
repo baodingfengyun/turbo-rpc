@@ -20,7 +20,6 @@
 package rpc.turbo.serialization.kryo;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.util.DefaultStreamFactory;
 import com.esotericsoftware.kryo.util.MapReferenceResolver;
 import io.netty.buffer.ByteBuf;
 
@@ -46,7 +45,7 @@ public final class KryoContext {
     private Map<Class<?>, Integer> latestClassIds;
 
     public KryoContext() {
-        kryo = new Kryo(new FastClassResolver(), new MapReferenceResolver(), new DefaultStreamFactory());
+        kryo = new Kryo(new FastClassResolver(), new MapReferenceResolver());
         kryo.setDefaultSerializer(FastSerializer.class);
         kryo.setReferences(false);
 

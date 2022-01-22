@@ -5,7 +5,7 @@ import com.esotericsoftware.kryo.Registration;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.util.UnsafeUtil;
+import com.esotericsoftware.kryo.unsafe.UnsafeUtil;
 import javassist.*;
 import rpc.turbo.util.SingleClassLoader;
 import rpc.turbo.util.tuple.Tuple;
@@ -56,7 +56,7 @@ public class FastSerializer<T> extends Serializer<T> {
     }
 
     @Override
-    public T read(Kryo kryo, Input input, Class<T> type) {
+    public T read(Kryo kryo, Input input, Class<? extends T> type) {
         return realSerializer.read(kryo, input, type);
     }
 
@@ -102,7 +102,9 @@ public class FastSerializer<T> extends Serializer<T> {
             nextClass = nextClass.getSuperclass();
         }
 
-        return UnsafeUtil.sortFieldsByOffset(allFields);
+        //return UnsafeUtil.sortFieldsByOffset(allFields);
+        //FIXME 临时调整
+        return allFields.toArray(Field[]::new);
     }
 
     @SuppressWarnings("unchecked")
