@@ -14,17 +14,36 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * 所有public的方法返回值类型都必须为CompletableFuture.
  *
  * @author Hank
+ * @author liupu
  */
 @Documented
 @Retention(RUNTIME)
 @Target({TYPE, METHOD})
 public @interface TurboService {
 
+    /**
+     * 默认权重
+     */
     int DEFAULT_WEIGHT = 100;
+    /**
+     * 默认分组
+     */
     String DEFAULT_GROUP = "DEFAULT_GROUP";
+    /**
+     * 默认应用
+     */
     String DEFAULT_APP = "DEFAULT_APP";
+    /**
+     * 默认版本（X.Y.Z）
+     */
     String DEFAULT_VERSION = "1.0.0";
+    /**
+     * 默认超时
+     */
     long DEFAULT_TIME_OUT = 5 * 1000L;
+    /**
+     * 默认是否忽略
+     */
     boolean DEFAULT_IGNORE = false;
 
     /**
@@ -32,7 +51,7 @@ public @interface TurboService {
      * 仅第一位为实际使用，第一位不一样时表示是不兼容的方法调用<br>
      * method有则用method的，method没有则使用class的，都没有则使用默认值1.0.0
      *
-     * @return
+     * @return 版本（X.Y.Z）
      */
     String version();
 
@@ -40,14 +59,14 @@ public @interface TurboService {
      * for METHOD and TYPE, millseconds, 当等于-1时程序会自动处理为默认值5000<br>
      * method有则用method的，method没有则使用class的，class没有则使用默认值5000
      *
-     * @return
+     * @return 超时时间（毫秒）
      */
     long timeout() default -1;
 
     /**
      * for METHOD and TYPE，忽略，不对外提供服务
      *
-     * @return
+     * @return 是否对外提供服务
      */
     boolean ignore() default DEFAULT_IGNORE;
 
@@ -72,7 +91,7 @@ public @interface TurboService {
      * <br>
      * 通过HTTP POST http://host:port/group/app/user/get?v=2请求, body内容为{"id": 1}.<br>
      *
-     * @return
+     * @return REST风格的服务路径
      */
     String rest() default "";
 
