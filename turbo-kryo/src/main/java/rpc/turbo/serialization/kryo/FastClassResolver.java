@@ -29,7 +29,8 @@ import com.esotericsoftware.kryo.util.IdentityObjectIntMap;
 import rpc.turbo.util.FastMap;
 import rpc.turbo.util.IntToObjectArrayMap;
 
-import static com.esotericsoftware.kryo.util.Util.*;
+import static com.esotericsoftware.kryo.util.Util.className;
+import static com.esotericsoftware.kryo.util.Util.getWrapperClass;
 import static com.esotericsoftware.minlog.Log.*;
 
 /**

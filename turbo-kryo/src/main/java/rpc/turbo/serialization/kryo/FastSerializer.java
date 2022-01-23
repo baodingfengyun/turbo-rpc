@@ -5,7 +5,6 @@ import com.esotericsoftware.kryo.Registration;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.unsafe.UnsafeUtil;
 import javassist.*;
 import rpc.turbo.util.SingleClassLoader;
 import rpc.turbo.util.tuple.Tuple;
