@@ -46,6 +46,7 @@
 		<version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
 		<version.maven-resources-plugin>3.2.0</version.maven-resources-plugin>
 		<version.maven-source-plugin>3.2.1</version.maven-source-plugin>
+		<version.maven-javadoc-plugin>3.3.1</version.maven-javadoc-plugin>
 	</properties>
 
 	<dependencyManagement>
@@ -193,7 +194,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
+				<version>${version.maven-compiler-plugin}</version>
 				<configuration>
 					<source>11</source>
 					<target>11</target>
@@ -203,7 +204,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>${version.maven-resources-plugin}</version>
 				<configuration>
 					<encoding>UTF-8</encoding>
 				</configuration>
@@ -211,7 +212,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.2.1</version>
+				<version>${version.maven-source-plugin}</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -224,7 +225,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.3.1</version>
+				<version>${version.maven-javadoc-plugin}</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
